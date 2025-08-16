@@ -110,11 +110,11 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Let's <span className="gradient-text">Connect</span>
+            Let&apos;s <span className="gradient-text">Connect</span>
           </h2>
           <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
             Have a project in mind or just want to chat about technology? 
-            I'm always open to discussing new opportunities and collaborations.
+            I&apos;m always open to discussing new opportunities and collaborations.
           </p>
         </div>
 
@@ -126,9 +126,9 @@ export default function Contact() {
                 Get In Touch
               </h3>
               <p className="text-foreground/70 leading-relaxed mb-6">
-                I'm currently available for freelance work and full-time opportunities. 
+                I&apos;m currently available for freelance work and full-time opportunities. 
                 Whether you have a project to discuss, a job opportunity, or just want to 
-                connect, I'd love to hear from you!
+                connect, I&apos;d love to hear from you!
               </p>
             </div>
 
@@ -318,7 +318,7 @@ export default function Contact() {
               </div>
               <div className="bg-background rounded-lg p-4">
                 <h4 className="font-semibold text-foreground mb-2">
-                  What's your typical project timeline?
+                  What&apos;s your typical project timeline?
                 </h4>
                 <p className="text-foreground/70 text-sm">
                   Project timelines vary based on scope and complexity. Small projects 

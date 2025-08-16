@@ -5,11 +5,7 @@ import {
   Code2, 
   Database, 
   Cloud, 
-  Smartphone, 
   TestTube2, 
-  GitBranch,
-  Cpu,
-  Globe,
   Monitor,
   Settings
 } from 'lucide-react';
@@ -18,12 +14,12 @@ interface Skill {
   name: string;
   level: number;
   category: string;
-  icon?: any;
+  icon?: React.ElementType;
 }
 
 interface SkillCategory {
   name: string;
-  icon: any;
+  icon: React.ElementType;
   skills: Skill[];
   color: string;
 }
@@ -122,23 +118,6 @@ const skillCategories: SkillCategory[] = [
 export default function Skills() {
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const getColorClasses = (color: string) => {
-    const colors = {
-      blue: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-      green: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-      purple: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
-      orange: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300',
-      red: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-      gray: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
-    };
-    return colors[color as keyof typeof colors] || colors.blue;
-  };
-
-  const allSkills = skillCategories.flatMap(category => category.skills);
-
-  const displayedSkills = selectedCategory === 'All' 
-    ? allSkills 
-    : skillCategories.find(cat => cat.name === selectedCategory)?.skills || [];
 
   return (
     <section id="skills" className="py-20 sm:py-32 bg-background">
@@ -260,8 +239,8 @@ export default function Skills() {
             Always Learning
           </h3>
           <p className="text-foreground/70 max-w-3xl mx-auto">
-            I'm constantly expanding my skill set and staying up-to-date with the latest technologies. 
-            Currently exploring: <strong className="text-foreground">Web3, Machine Learning, & Cloud Architecture</strong>.
+            I&apos;m constantly expanding my skill set and staying up-to-date with the latest technologies. 
+            Currently exploring: <strong className="text-foreground">Web3, Machine Learning, &amp; Cloud Architecture</strong>.
           </p>
         </div>
       </div>

@@ -27,7 +27,7 @@ export default function Hero() {
         <div className="text-center">
           {/* Animated greeting */}
           <div className="fade-in-up mb-6">
-            <p className="text-lg text-foreground/60 mb-2">Hello, I'm</p>
+            <p className="text-lg text-foreground/60 mb-2">Hello, I&apos;m</p>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               Goodluck Wile
             </h1>

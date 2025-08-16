@@ -50,7 +50,7 @@ export default function About() {
               </h3>
               <div className="prose prose-lg text-foreground/80 space-y-4">
                 <p>
-                  I'm a passionate full-stack software engineer with over 3 years of experience 
+                  I&apos;m a passionate full-stack software engineer with over 3 years of experience 
                   crafting digital solutions that make a real impact. My journey began with a 
                   curiosity about how things work behind the scenes, which evolved into a 
                   deep passion for creating seamless user experiences.
@@ -58,13 +58,13 @@ export default function About() {
                 <p>
                   From building scalable web applications to designing intuitive interfaces, 
                   I thrive on solving complex challenges and bringing ideas to life. I believe 
-                  that great software is not just about code — it's about understanding user 
+                  that great software is not just about code — it&apos;s about understanding user 
                   needs and delivering value.
                 </p>
                 <p>
-                  When I'm not coding, you'll find me exploring new technologies, contributing 
+                  When I&apos;m not coding, you&apos;ll find me exploring new technologies, contributing 
                   to open-source projects, or sharing knowledge with the tech community. 
-                  I'm constantly learning and pushing boundaries to stay at the forefront 
+                  I&apos;m constantly learning and pushing boundaries to stay at the forefront 
                   of technology.
                 </p>
               </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ExternalLink, Github, Star, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 
 interface Project {
   id: number;
@@ -92,15 +93,12 @@ const projects: Project[] = [
 
 export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-
 
   const categories = ['All', 'Full-Stack', 'Frontend', 'AI/ML'];
   const filteredProjects = selectedCategory === 'All' 
     ? projects 
     : projects.filter(project => project.category === selectedCategory);
 
-  const featuredProjects = projects.filter(project => project.featured);
 
   return (
     <section id="projects" className="py-20 sm:py-32 bg-accent/30">
@@ -140,12 +138,10 @@ export default function Projects() {
             <div
               key={project.id}
               className={`group relative bg-background rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 fade-in-up delay-${index * 100}`}
-              onMouseEnter={() => setHoveredProject(project.id)}
-              onMouseLeave={() => setHoveredProject(null)}
             >
               {/* Project image */}
               <div className="relative h-48 overflow-hidden">
-                <img
+                <Image
                   src={project.image}
                   alt={project.title}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
