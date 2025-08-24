@@ -7,6 +7,7 @@ import { Menu, X, Sun, Moon, Github, Linkedin, Mail } from 'lucide-react';
 const navigation = [
   { name: 'About', href: '#about' },
   { name: 'Projects', href: '#projects' },
+  { name: 'News', href: '#news' },
   { name: 'Skills', href: '#skills' },
   { name: 'Contact', href: '#contact' },
 ];
@@ -84,7 +85,7 @@ export default function Navigation() {
 
             <div className="hidden md:flex items-center space-x-3">
               <a
-                href="https://github.com/yourusername"
+                href="https://github.com/wile44"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg text-foreground/70 hover:text-foreground hover:bg-accent/50 transition-all duration-200"
@@ -93,7 +94,7 @@ export default function Navigation() {
                 <Github className="h-5 w-5" />
               </a>
               <a
-                href="https://linkedin.com/in/yourusername"
+                href="https://linkedin.com/in/goodluck-lingson-wile-8092241b4/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg text-foreground/70 hover:text-foreground hover:bg-accent/50 transition-all duration-200"
@@ -102,7 +103,7 @@ export default function Navigation() {
                 <Linkedin className="h-5 w-5" />
               </a>
               <a
-                href="mailto:goodluckwile@example.com"
+                href="mailto:wilegoodluck@gmail.com"
                 className="p-2 rounded-lg text-foreground/70 hover:text-foreground hover:bg-accent/50 transition-all duration-200"
                 aria-label="Email"
               >
@@ -149,7 +150,7 @@ export default function Navigation() {
             ))}
             <div className="flex space-x-4 pt-4 px-3">
               <a
-                href="https://github.com/yourusername"
+                href="https://github.com/wile44"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/70 hover:text-foreground transition-colors duration-200"
@@ -158,7 +159,7 @@ export default function Navigation() {
                 <Github className="h-5 w-5" />
               </a>
               <a
-                href="https://linkedin.com/in/yourusername"
+                href="https://linkedin.com/in/goodluck-lingson-wile-8092241b4"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/70 hover:text-foreground transition-colors duration-200"
@@ -167,7 +168,7 @@ export default function Navigation() {
                 <Linkedin className="h-5 w-5" />
               </a>
               <a
-                href="mailto:goodluckwile@example.com"
+                href="mailto:wilegoodluck@gmail.com"
                 className="text-foreground/70 hover:text-foreground transition-colors duration-200"
                 aria-label="Email"
               >

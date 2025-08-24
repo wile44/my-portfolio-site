@@ -1,8 +1,10 @@
 'use client';
 
 import { ArrowDown, Download, Github, Linkedin, Mail } from 'lucide-react';
+import { useAboutData } from '@/lib/hooks/useDirectus';
 
 export default function Hero() {
+  const { data: aboutData, loading, error } = useAboutData();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.querySelector(sectionId);
@@ -29,26 +31,24 @@ export default function Hero() {
           <div className="fade-in-up mb-6">
             <p className="text-lg text-foreground/60 mb-2">Hello, I&apos;m</p>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Goodluck Wile
+              {loading ? 'Loading...' : aboutData?.name || 'Goodluck Wile'}
             </h1>
           </div>
 
           {/* Animated role */}
           <div className="fade-in-up delay-100 mb-8">
             <p className="text-2xl md:text-3xl text-foreground/80 font-light">
-              Full-Stack Software Engineer
+              {loading ? 'Loading...' : aboutData?.title || 'Full-Stack Software Engineer'}
             </p>
             <p className="text-lg text-foreground/60 mt-2">
-              Crafting digital experiences with modern technologies
+              {loading ? 'Loading...' : aboutData?.description || 'Crafting digital experiences with modern technologies'}
             </p>
           </div>
 
           {/* Animated description */}
           <div className="fade-in-up delay-200 mb-10 max-w-2xl mx-auto">
             <p className="text-lg text-foreground/70 leading-relaxed">
-              I build scalable web applications, design elegant user interfaces, 
-              and solve complex problems with clean, efficient code. 
-              Passionate about creating impactful digital solutions.
+              {loading ? 'Loading...' : aboutData?.bio || 'I build scalable web applications, design elegant user interfaces, and solve complex problems with clean, efficient code. Passionate about creating impactful digital solutions.'}
             </p>
           </div>
 
@@ -73,36 +73,57 @@ export default function Hero() {
 
           {/* Animated social links */}
           <div className="fade-in-up delay-400 flex justify-center space-x-6">
-            <a
-              href="https://github.com/yourusername"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group p-3 rounded-lg bg-accent/50 hover:bg-accent transition-all duration-200 transform hover:scale-110"
-              aria-label="GitHub"
-            >
-              <Github className="h-6 w-6 text-foreground group-hover:text-blue-600 transition-colors" />
-            </a>
+            {aboutData?.github_url && (
+              <a
+                href={aboutData.github_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group p-3 rounded-lg bg-accent/50 hover:bg-accent transition-all duration-200 transform hover:scale-110"
+                aria-label="GitHub"
+              >
+                <Github className="h-6 w-6 text-foreground group-hover:text-blue-600 transition-colors" />
+              </a>
+            )}
             
-            <a
-              href="https://linkedin.com/in/yourusername"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group p-3 rounded-lg bg-accent/50 hover:bg-accent transition-all duration-200 transform hover:scale-110"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="h-6 w-6 text-foreground group-hover:text-blue-600 transition-colors" />
-            </a>
+            {aboutData?.linkedin_url && (
+              <a
+                href={aboutData.linkedin_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group p-3 rounded-lg bg-accent/50 hover:bg-accent transition-all duration-200 transform hover:scale-110"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-6 w-6 text-foreground group-hover:text-blue-600 transition-colors" />
+              </a>
+            )}
             
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center px-4 py-3 rounded-lg bg-accent/50 hover:bg-accent transition-all duration-200 transform hover:scale-110"
-              aria-label="Download Resume"
-            >
-              <Download className="h-5 w-5 mr-2 text-foreground group-hover:text-blue-600 transition-colors" />
-              <span className="text-sm font-medium text-foreground group-hover:text-blue-600 transition-colors">Resume</span>
-            </a>
+            {aboutData?.resume_url && (
+              <a
+                href={aboutData.resume_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center px-4 py-3 rounded-lg bg-accent/50 hover:bg-accent transition-all duration-200 transform hover:scale-110"
+                aria-label="Download Resume"
+              >
+                <Download className="h-5 w-5 mr-2 text-foreground group-hover:text-blue-600 transition-colors" />
+                <span className="text-sm font-medium text-foreground group-hover:text-blue-600 transition-colors">Resume</span>
+              </a>
+            )}
+            
+            {/* Show loading state for social links */}
+            {loading && (
+              <>
+                <div className="p-3 rounded-lg bg-accent/50 animate-pulse">
+                  <div className="h-6 w-6 bg-foreground/20 rounded"></div>
+                </div>
+                <div className="p-3 rounded-lg bg-accent/50 animate-pulse">
+                  <div className="h-6 w-6 bg-foreground/20 rounded"></div>
+                </div>
+                <div className="px-4 py-3 rounded-lg bg-accent/50 animate-pulse">
+                  <div className="h-5 w-16 bg-foreground/20 rounded"></div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

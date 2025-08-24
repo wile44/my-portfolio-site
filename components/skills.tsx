@@ -7,117 +7,121 @@ import {
   Cloud, 
   TestTube2, 
   Monitor,
-  Settings
+  Settings,
+  Video,
+  Palette,
+  PenTool
 } from 'lucide-react';
 
 interface Skill {
   name: string;
-  level: number;
-  category: string;
-  icon?: React.ElementType;
+  proficiency: number;
 }
 
 interface SkillCategory {
   name: string;
-  icon: React.ElementType;
   skills: Skill[];
+  icon: React.ElementType;
   color: string;
 }
 
+const categoryIcons = {
+  'Frontend': Monitor,
+  'Backend': Code2,
+  'Databases': Database,
+  'Cloud': Cloud,
+  'DevOps': Settings,
+  'Testing': TestTube2,
+  'Tools': Settings,
+  'Creative & Media': Palette,
+  'Design & UX': PenTool,
+  'Content Creation': Video,
+};
+
+const categoryColors = {
+  'Frontend': 'blue',
+  'Backend': 'green',
+  'Databases': 'purple',
+  'Cloud': 'orange',
+  'DevOps': 'orange',
+  'Testing': 'red',
+  'Tools': 'gray',
+  'Creative & Media': 'pink',
+  'Design & UX': 'indigo',
+  'Content Creation': 'red',
+};
+
+// Hardcoded skills data
 const skillCategories: SkillCategory[] = [
   {
     name: 'Frontend',
     icon: Monitor,
     color: 'blue',
     skills: [
-      { name: 'React', level: 95, category: 'Frontend' },
-      { name: 'TypeScript', level: 90, category: 'Frontend' },
-      { name: 'Next.js', level: 88, category: 'Frontend' },
-      { name: 'JavaScript', level: 92, category: 'Frontend' },
-      { name: 'Tailwind CSS', level: 94, category: 'Frontend' },
-      { name: 'HTML5/CSS3', level: 96, category: 'Frontend' },
-      { name: 'Redux', level: 85, category: 'Frontend' },
-      { name: 'Framer Motion', level: 82, category: 'Frontend' },
-    ],
+      { name: 'React', proficiency: 90 },
+      { name: 'TypeScript', proficiency: 85 },
+      { name: 'Next.js', proficiency: 88 },
+      { name: 'Tailwind CSS', proficiency: 92 },
+      { name: 'JavaScript', proficiency: 95 },
+      { name: 'HTML5 & CSS3', proficiency: 93 },
+    ]
   },
   {
     name: 'Backend',
     icon: Code2,
     color: 'green',
     skills: [
-      { name: 'Node.js', level: 90, category: 'Backend' },
-      { name: 'Python', level: 85, category: 'Backend' },
-      { name: 'Express.js', level: 92, category: 'Backend' },
-      { name: 'FastAPI', level: 80, category: 'Backend' },
-      { name: 'RESTful APIs', level: 94, category: 'Backend' },
-      { name: 'GraphQL', level: 78, category: 'Backend' },
-      { name: 'JWT Auth', level: 90, category: 'Backend' },
-      { name: 'Microservices', level: 75, category: 'Backend' },
-    ],
+      { name: 'Node.js', proficiency: 87 },
+      { name: 'Python', proficiency: 83 },
+      { name: 'Express.js', proficiency: 85 },
+      { name: 'REST APIs', proficiency: 90 },
+      { name: 'GraphQL', proficiency: 78 },
+      { name: 'JWT Authentication', proficiency: 82 },
+    ]
   },
   {
     name: 'Databases',
     icon: Database,
     color: 'purple',
     skills: [
-      { name: 'PostgreSQL', level: 88, category: 'Databases' },
-      { name: 'MongoDB', level: 85, category: 'Databases' },
-      { name: 'Redis', level: 80, category: 'Databases' },
-      { name: 'MySQL', level: 82, category: 'Databases' },
-      { name: 'Prisma', level: 85, category: 'Databases' },
-      { name: 'SQL', level: 90, category: 'Databases' },
-      { name: 'Database Design', level: 85, category: 'Databases' },
-      { name: 'ORM', level: 88, category: 'Databases' },
-    ],
+      { name: 'PostgreSQL', proficiency: 80 },
+      { name: 'MongoDB', proficiency: 78 },
+      { name: 'MySQL', proficiency: 75 },
+      { name: 'Redis', proficiency: 70 },
+      { name: 'SQLite', proficiency: 85 },
+      { name: 'Database Design', proficiency: 88 },
+    ]
   },
   {
     name: 'Cloud & DevOps',
     icon: Cloud,
     color: 'orange',
     skills: [
-      { name: 'AWS', level: 80, category: 'Cloud' },
-      { name: 'Docker', level: 85, category: 'DevOps' },
-      { name: 'Kubernetes', level: 75, category: 'DevOps' },
-      { name: 'CI/CD', level: 88, category: 'DevOps' },
-      { name: 'Vercel', level: 95, category: 'Cloud' },
-      { name: 'Netlify', level: 90, category: 'Cloud' },
-      { name: 'Linux', level: 85, category: 'DevOps' },
-      { name: 'Nginx', level: 80, category: 'DevOps' },
-    ],
+      { name: 'AWS', proficiency: 75 },
+      { name: 'Docker', proficiency: 82 },
+      { name: 'Kubernetes', proficiency: 70 },
+      { name: 'GitHub Actions', proficiency: 80 },
+      { name: 'CI/CD', proficiency: 78 },
+      { name: 'Vercel', proficiency: 90 },
+    ]
   },
   {
-    name: 'Testing',
+    name: 'Testing & Tools',
     icon: TestTube2,
     color: 'red',
     skills: [
-      { name: 'Jest', level: 85, category: 'Testing' },
-      { name: 'React Testing Library', level: 88, category: 'Testing' },
-      { name: 'Cypress', level: 80, category: 'Testing' },
-      { name: 'Unit Testing', level: 90, category: 'Testing' },
-      { name: 'Integration Testing', level: 85, category: 'Testing' },
-      { name: 'E2E Testing', level: 82, category: 'Testing' },
-    ],
-  },
-  {
-    name: 'Tools & Others',
-    icon: Settings,
-    color: 'gray',
-    skills: [
-      { name: 'Git', level: 92, category: 'Tools' },
-      { name: 'GitHub', level: 94, category: 'Tools' },
-      { name: 'VS Code', level: 96, category: 'Tools' },
-      { name: 'Postman', level: 88, category: 'Tools' },
-      { name: 'Figma', level: 75, category: 'Tools' },
-      { name: 'Webpack', level: 80, category: 'Tools' },
-      { name: 'Babel', level: 78, category: 'Tools' },
-      { name: 'ESLint', level: 90, category: 'Tools' },
-    ],
-  },
+      { name: 'Jest', proficiency: 85 },
+      { name: 'React Testing Library', proficiency: 82 },
+      { name: 'Cypress', proficiency: 75 },
+      { name: 'Git', proficiency: 90 },
+      { name: 'Webpack', proficiency: 78 },
+      { name: 'Vite', proficiency: 85 },
+    ]
+  }
 ];
 
 export default function Skills() {
   const [selectedCategory, setSelectedCategory] = useState('All');
-
 
   return (
     <section id="skills" className="py-20 sm:py-32 bg-background">
@@ -175,7 +179,7 @@ export default function Skills() {
                       <div key={skill.name} className="space-y-2">
                         <div className="flex justify-between items-center">
                           <span className="text-sm font-medium text-foreground">{skill.name}</span>
-                          <span className="text-sm text-foreground/70">{skill.level}%</span>
+                          <span className="text-sm text-foreground/70">{skill.proficiency}%</span>
                         </div>
                         <div className="w-full bg-accent/50 rounded-full h-2">
                           <div
@@ -187,7 +191,7 @@ export default function Skills() {
                               category.color === 'red' ? 'bg-red-600' :
                               'bg-gray-600'
                             }`}
-                            style={{ width: `${skill.level}%` }}
+                            style={{ width: `${skill.proficiency}%` }}
                           />
                         </div>
                       </div>
@@ -209,7 +213,7 @@ export default function Skills() {
                           <div key={skill.name} className="space-y-2">
                             <div className="flex justify-between items-center">
                               <span className="font-medium text-foreground">{skill.name}</span>
-                              <span className="text-sm text-foreground/70">{skill.level}%</span>
+                              <span className="text-sm text-foreground/70">{skill.proficiency}%</span>
                             </div>
                             <div className="w-full bg-accent/50 rounded-full h-3">
                               <div
@@ -221,7 +225,7 @@ export default function Skills() {
                                   category.color === 'red' ? 'bg-red-600' :
                                   'bg-gray-600'
                                 }`}
-                                style={{ width: `${skill.level}%` }}
+                                style={{ width: `${skill.proficiency}%` }}
                               />
                             </div>
                           </div>

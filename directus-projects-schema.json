@@ -1,0 +1,202 @@
+{
+  "collection": "projects",
+  "meta": {
+    "collection": "projects",
+    "icon": "work",
+    "note": "Portfolio projects and case studies",
+    "display_template": "{{title}}",
+    "hidden": false,
+    "singleton": false,
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Projects"
+      }
+    ]
+  },
+  "schema": {
+    "name": "projects",
+    "comment": null
+  },
+  "fields": [
+    {
+      "collection": "projects",
+      "field": "id",
+      "type": "uuid",
+      "meta": {
+        "hidden": true,
+        "readonly": true,
+        "interface": "input",
+        "special": ["uuid"]
+      },
+      "schema": {
+        "is_primary_key": true,
+        "length": 36,
+        "has_auto_increment": false
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "status",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "options": {
+          "choices": [
+            {"text": "Draft", "value": "draft"},
+            {"text": "Published", "value": "published"}
+          ]
+        },
+        "display": "labels",
+        "display_options": {
+          "draft": {"background": "#FFA726", "color": "#FFFFFF"},
+          "published": {"background": "#4CAF50", "color": "#FFFFFF"}
+        }
+      },
+      "schema": {
+        "default_value": "draft",
+        "is_nullable": false
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "title",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "options": {"placeholder": "Project title"},
+        "required": true
+      },
+      "schema": {"is_nullable": false}
+    },
+    {
+      "collection": "projects",
+      "field": "description",
+      "type": "text",
+      "meta": {
+        "interface": "textarea",
+        "options": {"placeholder": "Short description for cards", "soft_length": 200}
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "short_description",
+      "type": "text",
+      "meta": {
+        "interface": "textarea",
+        "options": {"placeholder": "Medium description for drawer", "soft_length": 500}
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "long_description",
+      "type": "text",
+      "meta": {
+        "interface": "input-rich-text-html",
+        "options": {
+          "toolbar": [
+            "bold",
+            "italic",
+            "underline",
+            "h1",
+            "h2",
+            "h3",
+            "blockquote",
+            "bullist",
+            "numlist",
+            "link",
+            "image",
+            "code",
+            "fullscreen"
+          ]
+        }
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "image",
+      "type": "uuid",
+      "meta": {
+        "interface": "file-image",
+        "special": ["file"]
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "gallery",
+      "type": "json",
+      "meta": {
+        "interface": "files",
+        "special": ["files"]
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "technologies",
+      "type": "json",
+      "meta": {
+        "interface": "tags",
+        "options": {"placeholder": "Add technologies..."}
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "github_url",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "options": {"placeholder": "https://github.com/username/project"}
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "live_url",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "options": {"placeholder": "https://project-demo.com"}
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "featured",
+      "type": "boolean",
+      "meta": {
+        "interface": "toggle",
+        "options": {"label": "Featured project"}
+      },
+      "schema": {"default_value": false}
+    },
+    {
+      "collection": "projects",
+      "field": "sort",
+      "type": "integer",
+      "meta": {
+        "interface": "input",
+        "options": {"placeholder": "1"},
+        "required": true
+      },
+      "schema": {"default_value": 1}
+    },
+    {
+      "collection": "projects",
+      "field": "date_created",
+      "type": "timestamp",
+      "meta": {
+        "hidden": true,
+        "readonly": true,
+        "special": ["date-created"]
+      }
+    },
+    {
+      "collection": "projects",
+      "field": "date_updated",
+      "type": "timestamp",
+      "meta": {
+        "hidden": true,
+        "readonly": true,
+        "special": ["date-updated"]
+      }
+    }
+  ]
+}

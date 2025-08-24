@@ -1,104 +1,85 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ExternalLink, Github, Star, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
-
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  longDescription: string;
-  image: string;
-  technologies: string[];
-  githubUrl: string;
-  liveUrl?: string;
-  category: string;
-  featured: boolean;
-}
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: 'E-Commerce Platform',
-    description: 'Full-stack e-commerce solution with modern features',
-    longDescription: 'A comprehensive e-commerce platform built with Next.js, featuring user authentication, product management, shopping cart, payment integration with Stripe, and admin dashboard with real-time analytics.',
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80',
-    technologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'Stripe', 'Tailwind CSS', 'Prisma'],
-    githubUrl: 'https://github.com/goodluckwile/ecommerce-platform',
-    liveUrl: 'https://ecommerce-demo.vercel.app',
-    category: 'Full-Stack',
-    featured: true,
-  },
-  {
-    id: 2,
-    title: 'Task Management App',
-    description: 'Collaborative project management tool with real-time updates',
-    longDescription: 'A real-time collaborative task management application featuring drag-and-drop functionality, team collaboration, file attachments, notifications, and advanced filtering capabilities.',
-    image: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&q=80',
-    technologies: ['React', 'Node.js', 'Socket.io', 'MongoDB', 'Express', 'Tailwind CSS'],
-    githubUrl: 'https://github.com/goodluckwile/task-manager',
-    liveUrl: 'https://task-manager-demo.vercel.app',
-    category: 'Full-Stack',
-    featured: true,
-  },
-  {
-    id: 3,
-    title: 'Weather Dashboard',
-    description: 'Beautiful weather app with location-based forecasts',
-    longDescription: 'A responsive weather dashboard that provides real-time weather data, 7-day forecasts, interactive maps, and location-based alerts with beautiful animations and intuitive design.',
-    image: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=800&q=80',
-    technologies: ['React', 'TypeScript', 'OpenWeather API', 'Chart.js', 'Tailwind CSS'],
-    githubUrl: 'https://github.com/goodluckwile/weather-dashboard',
-    liveUrl: 'https://weather-dashboard-demo.netlify.app',
-    category: 'Frontend',
-    featured: false,
-  },
-  {
-    id: 4,
-    title: 'Portfolio Website',
-    description: 'Modern, responsive portfolio showcasing my work',
-    longDescription: 'A cutting-edge portfolio website built with Next.js and modern web technologies, featuring smooth animations, dark mode, responsive design, and optimized performance.',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
-    technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Vercel'],
-    githubUrl: 'https://github.com/goodluckwile/portfolio',
-    liveUrl: 'https://goodluckwile.dev',
-    category: 'Frontend',
-    featured: true,
-  },
-  {
-    id: 5,
-    title: 'AI Chatbot',
-    description: 'Intelligent chatbot powered by OpenAI GPT',
-    longDescription: 'An AI-powered chatbot that provides intelligent responses, context awareness, conversation history, and customizable personalities for various use cases.',
-    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
-    technologies: ['Python', 'FastAPI', 'OpenAI API', 'React', 'WebSocket', 'PostgreSQL'],
-    githubUrl: 'https://github.com/goodluckwile/ai-chatbot',
-    liveUrl: 'https://ai-chat-demo.vercel.app',
-    category: 'AI/ML',
-    featured: false,
-  },
-  {
-    id: 6,
-    title: 'Expense Tracker',
-    description: 'Personal finance management with data visualization',
-    longDescription: 'A comprehensive expense tracking application with budget management, spending analytics, receipt scanning, and detailed financial insights with charts and reports.',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80',
-    technologies: ['React', 'Node.js', 'Chart.js', 'MongoDB', 'Express', 'Cloudinary'],
-    githubUrl: 'https://github.com/goodluckwile/expense-tracker',
-    category: 'Full-Stack',
-    featured: false,
-  },
-];
+import { getProjects } from '@/lib/directus';
+import { getOptimizedImageUrl } from '@/lib/directus';
+import type { Project } from '@/lib/directus';
+import ProjectDrawer from './ProjectDrawer';
 
 export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
-  const categories = ['All', 'Full-Stack', 'Frontend', 'AI/ML'];
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const data = await getProjects();
+      setProjects(data);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openProjectDrawer = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    setDrawerOpen(true);
+  };
+
+  const closeProjectDrawer = () => {
+    setDrawerOpen(false);
+    setSelectedProjectId(null);
+  };
+
+  const categories = ['All', 'Full-Stack', 'Frontend', 'AI/ML', 'Mobile', 'Backend'];
   const filteredProjects = selectedCategory === 'All' 
     ? projects 
-    : projects.filter(project => project.category === selectedCategory);
+    : projects.filter(project => {
+        // Filter by technologies or other criteria since category field is not available
+        const techCategories = {
+          'Full-Stack': ['react', 'next.js', 'node.js', 'express', 'mongodb', 'postgresql'],
+          'Frontend': ['react', 'next.js', 'vue', 'angular', 'tailwind', 'css', 'html'],
+          'AI/ML': ['python', 'tensorflow', 'pytorch', 'machine learning', 'ai', 'ml'],
+          'Mobile': ['react native', 'flutter', 'swift', 'kotlin', 'ios', 'android'],
+          'Backend': ['node.js', 'python', 'java', 'postgresql', 'mongodb', 'redis']
+        };
+        
+        if (selectedCategory === 'All') return true;
+        
+        const techs = project.technologies.map(t => t.toLowerCase());
+        const categoryTechs = techCategories[selectedCategory as keyof typeof techCategories] || [];
+        return techs.some(tech => categoryTechs.some(catTech => tech.includes(catTech)));
+      });
 
+  if (loading) {
+    return (
+      <section id="projects" className="py-20 sm:py-32 bg-accent/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Featured <span className="gradient-text">Projects</span>
+            </h2>
+            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+              A showcase of my recent work, demonstrating my skills in full-stack development, 
+              modern technologies, and creative problem-solving.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="projects" className="py-20 sm:py-32 bg-accent/30">
@@ -137,13 +118,15 @@ export default function Projects() {
           {filteredProjects.map((project, index) => (
             <div
               key={project.id}
-              className={`group relative bg-background rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 fade-in-up delay-${index * 100}`}
+              className={`group relative bg-background rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 fade-in-up ${index === 0 ? '' : index === 1 ? 'delay-100' : index === 2 ? 'delay-200' : index === 3 ? 'delay-300' : index === 4 ? 'delay-400' : index === 5 ? 'delay-500' : ''}`}
             >
               {/* Project image */}
               <div className="relative h-48 overflow-hidden">
                 <Image
-                  src={project.image}
+                  src={project.image ? getOptimizedImageUrl(project.image, 800, 400) : '/placeholder.jpg'}
                   alt={project.title}
+                  width={800}
+                  height={400}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -162,7 +145,7 @@ export default function Projects() {
               <div className="p-6">
                 <div className="mb-4">
                   <h3 className="text-xl font-semibold text-foreground mb-2">{project.title}</h3>
-                  <p className="text-foreground/70 text-sm leading-relaxed">{project.description}</p>
+                  <p className="text-foreground/70 text-sm leading-relaxed">{project.short_description}</p>
                 </div>
 
                 {/* Technologies */}
@@ -188,7 +171,7 @@ export default function Projects() {
                 <div className="flex items-center justify-between">
                   <div className="flex space-x-3">
                     <a
-                      href={project.githubUrl}
+                      href={project.github_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center text-sm text-foreground/70 hover:text-foreground transition-colors"
@@ -197,9 +180,9 @@ export default function Projects() {
                       Code
                     </a>
                     
-                    {project.liveUrl && (
+                    {project.live_url && (
                       <a
-                        href={project.liveUrl}
+                        href={project.live_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center text-sm text-foreground/70 hover:text-foreground transition-colors"
@@ -210,11 +193,9 @@ export default function Projects() {
                     )}
                   </div>
                   
-                  <button className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
-                    onClick={() => {
-                      // Could open modal with full details
-                      console.log('View details for:', project.title);
-                    }}
+                  <button
+                    onClick={() => openProjectDrawer(project.id)}
+                    className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors flex items-center bg-transparent border-none cursor-pointer"
                   >
                     Details
                     <ArrowRight className="inline-block h-4 w-4 ml-1" />
@@ -228,7 +209,7 @@ export default function Projects() {
         {/* View all projects CTA */}
         <div className="text-center">
           <a
-            href="https://github.com/goodluckwile"
+            href="https://github.com/wile44"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white gradient-bg hover:opacity-90 transition-all duration-200 transform hover:scale-105"
@@ -238,6 +219,12 @@ export default function Projects() {
           </a>
         </div>
       </div>
+      
+      <ProjectDrawer 
+        isOpen={drawerOpen} 
+        onClose={closeProjectDrawer} 
+        projectId={selectedProjectId} 
+      />
     </section>
   );
 }

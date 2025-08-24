@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Send, Mail, Phone, MapPin, Github, Linkedin, Twitter, CheckCircle, AlertCircle } from 'lucide-react';
+import { useAboutData } from '@/lib/hooks/useDirectus';
 
 interface FormData {
   name: string;
@@ -16,6 +17,7 @@ interface FormStatus {
 }
 
 export default function Contact() {
+  const { data: aboutData, loading } = useAboutData();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -39,26 +41,29 @@ export default function Contact() {
     
     setFormStatus({ type: 'loading', message: 'Sending message...' });
 
-    // Simulate form submission (replace with actual API call)
     try {
-      // In a real app, you would send this to your backend
-      console.log('Form submitted:', formData);
+      // Import the function dynamically to avoid SSR issues
+      const { submitContactMessage } = await import('@/lib/directus');
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const success = await submitContactMessage(formData);
       
-      setFormStatus({
-        type: 'success',
-        message: 'Thank you for your message! I\'ll get back to you soon.',
-      });
-      
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-      });
+      if (success) {
+        setFormStatus({
+          type: 'success',
+          message: 'Thank you for your message! I\'ll get back to you soon.',
+        });
+        
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+        });
+      } else {
+        throw new Error('Failed to submit message');
+      }
     } catch (error) {
+      console.error('Contact form error:', error);
       setFormStatus({
         type: 'error',
         message: 'Something went wrong. Please try again.',
@@ -67,42 +72,42 @@ export default function Contact() {
   };
 
   const contactInfo = [
-    {
+    ...(aboutData?.email ? [{
       icon: Mail,
       label: 'Email',
-      value: 'goodluckwile@example.com',
-      href: 'mailto:goodluckwile@example.com',
-    },
-    {
+      value: aboutData.email,
+      href: `mailto:${aboutData.email}`,
+    }] : []),
+    ...(aboutData?.phone ? [{
       icon: Phone,
       label: 'Phone',
-      value: '+1 (555) 123-4567',
-      href: 'tel:+15551234567',
-    },
-    {
+      value: aboutData.phone,
+      href: `tel:${aboutData.phone.replace(/[^+\d]/g, '')}`,
+    }] : []),
+    ...(aboutData?.location ? [{
       icon: MapPin,
       label: 'Location',
-      value: 'San Francisco, CA',
-      href: 'https://maps.google.com/?q=San Francisco, CA',
-    },
+      value: aboutData.location,
+      href: `https://maps.google.com/?q=${encodeURIComponent(aboutData.location)}`,
+    }] : []),
   ];
 
   const socialLinks = [
-    {
+    ...(aboutData?.github_url ? [{
       icon: Github,
       label: 'GitHub',
-      href: 'https://github.com/goodluckwile',
-    },
-    {
+      href: aboutData.github_url,
+    }] : []),
+    ...(aboutData?.linkedin_url ? [{
       icon: Linkedin,
       label: 'LinkedIn',
-      href: 'https://linkedin.com/in/goodluckwile',
-    },
-    {
+      href: aboutData.linkedin_url,
+    }] : []),
+    ...(aboutData?.twitter_url ? [{
       icon: Twitter,
       label: 'Twitter',
-      href: 'https://twitter.com/goodluckwile',
-    },
+      href: aboutData.twitter_url,
+    }] : []),
   ];
 
   return (
@@ -176,12 +181,25 @@ export default function Contact() {
                 Working Hours
               </h4>
               <div className="bg-background rounded-lg p-4">
-                <p className="text-foreground/70">
-                  Monday - Friday: 9:00 AM - 6:00 PM (PST)
-                </p>
-                <p className="text-foreground/70">
-                  Available for remote work and flexible hours
-                </p>
+                {aboutData?.working_hours ? (
+                  <p className="text-foreground/70 whitespace-pre-line">
+                    {aboutData.working_hours}
+                  </p>
+                ) : loading ? (
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-foreground/20 rounded mb-2"></div>
+                    <div className="h-4 bg-foreground/20 rounded w-3/4"></div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-foreground/70">
+                      Monday - Friday: 9:00 AM - 6:00 PM (PST)
+                    </p>
+                    <p className="text-foreground/70">
+                      Available for remote work and flexible hours
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>

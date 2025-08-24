@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Goodluck Wile - Portfolio Website
 
-## Getting Started
+A modern, responsive portfolio website built with Next.js and powered by Directus CMS for dynamic content management.
 
-First, run the development server:
+## 🚀 Features
+
+- **Modern Design**: Clean, professional design with dark/light theme support
+- **Dynamic Content**: Powered by Directus headless CMS
+- **Responsive**: Mobile-first design that works on all devices
+- **Performance Optimized**: Built with Next.js 15 and optimized images
+- **Working Contact Form**: Real contact form that stores messages in Directus
+- **SEO Friendly**: Proper meta tags and Open Graph support
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS v4
+- **CMS**: Directus (Headless CMS)
+- **TypeScript**: Full TypeScript support
+- **Icons**: Lucide React
+- **Fonts**: Geist (Google Fonts)
+
+## 🚀 Getting Started
+
+### 1. Install Dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Set up Directus
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### Option A: Docker Setup (Recommended)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The easiest way to run Directus locally is using Docker:
 
-## Learn More
+```bash
+# Start Directus with Docker
+cd ../directus-docker
+./start.sh
 
-To learn more about Next.js, take a look at the following resources:
+# Or manually
+docker compose up -d
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Access Directus:**
+- URL: http://localhost:8055
+- Email: `admin@example.com`
+- Password: `directus123`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+#### Option B: Manual Installation
 
-## Deploy on Vercel
+Alternatively, follow the detailed setup guide in [`DIRECTUS_SETUP.md`](./DIRECTUS_SETUP.md) to manually install and configure Directus.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Configure Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Copy the example environment file:
+
+```bash
+cp .env.example .env.local
+```
+
+Update `.env.local` with your Directus configuration:
+
+```env
+NEXT_PUBLIC_DIRECTUS_URL=http://localhost:8055
+DIRECTUS_TOKEN=your-directus-admin-token
+```
+
+### 4. Run the Development Server
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view your portfolio.
+
+## 📧 Contact Form Integration
+
+The contact form is now fully functional and integrates with Directus:
+- Form submissions are stored in the `contact_messages` collection
+- Includes form validation and error handling
+- Shows success/error messages to users
+- Admin can manage messages through Directus admin panel
+
+## 🎨 Dynamic Content
+
+All content is now managed through Directus:
+- **Hero Section**: Name, title, description, bio, social links
+- **Contact Info**: Email, phone, location, working hours
+- **Projects**: Portfolio projects (coming soon)
+- **Skills**: Technical skills (coming soon)
+- **Experience**: Work history (coming soon)
+
+## 🚀 Deployment
+
+### Deploy to Vercel
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add environment variables in Vercel dashboard:
+   - `NEXT_PUBLIC_DIRECTUS_URL`: Your Directus instance URL
+   - `DIRECTUS_TOKEN`: Your Directus admin token
+
+### Deploy Directus
+
+For production, consider:
+- **Directus Cloud**: Managed Directus hosting
+- **Self-hosted**: Deploy on your own server
+- **Railway/Render**: Easy deployment platforms
+
+## 🔧 Development
+
+### Available Scripts
+
+```bash
+pnpm dev          # Start development server
+pnpm build        # Build for production
+pnpm start        # Start production server
+pnpm lint         # Run ESLint
+```
+
+---
+
+Built with ❤️ using Next.js and Directus

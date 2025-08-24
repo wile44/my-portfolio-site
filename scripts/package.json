@@ -1,0 +1,22 @@
+{
+  "name": "directus-setup-scripts",
+  "version": "1.0.0",
+  "description": "Scripts to set up Directus CMS for portfolio",
+  "main": "setup-directus-db.js",
+  "scripts": {
+    "setup": "node setup-directus-db.js",
+    "test-connection": "node -e \"const {Client} = require('pg'); const client = new Client({user:'postgres', password:'mysecretpassword', host:'localhost', port:5432, database:'directus'}); client.connect().then(() => {console.log('✅ Database connection successful'); client.end();}).catch(err => {console.error('❌ Database connection failed:', err.message); process.exit(1);});\""
+  },
+  "dependencies": {
+    "pg": "^8.11.3"
+  },
+  "keywords": [
+    "directus",
+    "portfolio",
+    "cms",
+    "setup",
+    "postgresql"
+  ],
+  "author": "Goodluck Wile",
+  "license": "MIT"
+}

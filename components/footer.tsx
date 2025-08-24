@@ -9,7 +9,7 @@ export default function Footer() {
     {
       icon: Github,
       label: 'GitHub',
-      href: 'https://github.com/goodluckwile',
+      href: 'https://github.com/wile44',
     },
     {
       icon: Linkedin,

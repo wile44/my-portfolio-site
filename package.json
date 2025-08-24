@@ -6,9 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup-directus": "node scripts/setup-directus.js",
+    "setup-simple": "node scripts/simple-setup.js"
   },
   "dependencies": {
+    "@directus/sdk": "^20.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.539.0",
