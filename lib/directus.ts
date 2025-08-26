@@ -1,4 +1,4 @@
-import { createDirectus, rest, readItems, createItem, staticToken, uploadFiles } from '@directus/sdk';
+import { createDirectus, rest, readItems, createItem, staticToken } from '@directus/sdk';
 
 // Define the schema for your collections
 export interface About {
@@ -101,7 +101,7 @@ export async function getAboutInfo(): Promise<About | null> {
   try {
     const about = await directus.request(readItems('about', {
       limit: 1,
-    }));
+    })) as About[];
     return about[0] || null;
   } catch (error) {
     console.error('Error fetching about info:', error);
@@ -115,7 +115,7 @@ export async function getProjects(featured = false): Promise<Project[]> {
     const projects = await directus.request(readItems('projects', {
       filter,
       sort: ['sort'],
-    }));
+    })) as Project[];
     return projects;
   } catch (error) {
     console.error('Error fetching projects:', error);
@@ -127,7 +127,7 @@ export async function getSkills(): Promise<Skill[]> {
   try {
     const skills = await directus.request(readItems('skills', {
       sort: ['category', 'sort'],
-    }));
+    })) as Skill[];
     return skills;
   } catch (error) {
     console.error('Error fetching skills:', error);
@@ -139,7 +139,7 @@ export async function getExperience(): Promise<Experience[]> {
   try {
     const experience = await directus.request(readItems('experience', {
       sort: ['-start_date'],
-    }));
+    })) as Experience[];
     return experience;
   } catch (error) {
     console.error('Error fetching experience:', error);
@@ -153,7 +153,8 @@ export async function getArticles(type?: 'video' | 'article'): Promise<Article[]
     const articles = await directus.request(readItems('articles', {
       filter,
       sort: ['-published_at'],
-    }));
+    })) as Article[];
+    console.log('Directus: getArticles returned:', articles.length, 'articles');
     return articles;
   } catch (error) {
     console.error('Error fetching articles:', error);
@@ -163,10 +164,18 @@ export async function getArticles(type?: 'video' | 'article'): Promise<Article[]
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   try {
+    console.log('Directus: Fetching article with slug/id:', slug);
     const articles = await directus.request(readItems('articles', {
-      filter: { slug: { _eq: slug }, status: { _eq: 'published' } },
+      filter: { 
+        _or: [
+          { slug: { _eq: slug } },
+          { id: { _eq: slug } }
+        ],
+        status: { _eq: 'published' } 
+      },
       limit: 1,
-    }));
+    })) as Article[];
+    console.log('Directus: Found articles:', articles);
     return articles[0] || null;
   } catch (error) {
     console.error('Error fetching article:', error);
@@ -179,7 +188,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
     const projects = await directus.request(readItems('projects', {
       filter: { id: { _eq: id }, status: { _eq: 'published' } },
       limit: 1,
-    }));
+    })) as Project[];
     return projects[0] || null;
   } catch (error) {
     console.error('Error fetching project:', error);

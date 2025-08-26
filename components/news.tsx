@@ -5,11 +5,16 @@ import { Calendar, Clock, Play, ExternalLink } from 'lucide-react';
 import { getArticles } from '@/lib/directus';
 import { getOptimizedImageUrl } from '@/lib/directus';
 import type { Article } from '@/lib/directus';
+import NewsDrawer from './NewsDrawer';
+import Image from 'next/image';
+
 
 export default function News() {
   const [selectedType, setSelectedType] = useState<'all' | 'video' | 'article'>('all');
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedArticleSlug, setSelectedArticleSlug] = useState<string | null>(null);
 
   useEffect(() => {
     fetchArticles();
@@ -18,6 +23,15 @@ export default function News() {
   const fetchArticles = async () => {
     try {
       const data = await getArticles();
+      console.log('Fetched articles:', data);
+      // Log first few articles to see their structure
+      if (data.length > 0) {
+        console.log('First article:', {
+          id: data[0].id,
+          slug: data[0].slug,
+          title: data[0].title
+        });
+      }
       setArticles(data);
     } catch (error) {
       console.error('Error fetching articles:', error);
@@ -36,6 +50,17 @@ export default function News() {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const openNewsDrawer = (articleSlug: string) => {
+    console.log('Opening drawer for article slug/id:', articleSlug);
+    setSelectedArticleSlug(articleSlug);
+    setDrawerOpen(true);
+  };
+
+  const closeNewsDrawer = () => {
+    setDrawerOpen(false);
+    setSelectedArticleSlug(null);
   };
 
   if (loading) {
@@ -109,11 +134,12 @@ export default function News() {
           {filteredArticles.map((post) => (
             <article
               key={post.id}
-              className="flex flex-col items-start justify-between bg-card rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow duration-300"
+              className="flex flex-col items-start justify-between bg-card rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              onClick={() => openNewsDrawer(post.slug || post.id)}
             >
               {post.type === 'video' && post.image && (
                 <div className="relative w-full">
-                  <img
+                  <Image
                     src={getOptimizedImageUrl(post.image, 800, 450)}
                     alt={post.title}
                     className="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
@@ -141,14 +167,15 @@ export default function News() {
                 </div>
                 
                 <div className="group relative mt-3">
-                  <h3 className="text-lg font-semibold leading-6 text-foreground group-hover:text-primary transition-colors">
-                    <a href={`/articles/${post.slug || post.id}`} className="absolute inset-0">
-                      {post.title}
-                    </a>
+                  <h3 
+                    className="text-lg font-semibold leading-6 text-foreground group-hover:text-primary transition-colors"
+                  >
+                    {post.title}
                   </h3>
-                  <p className="mt-5 line-clamp-3 text-sm leading-6 text-foreground/70">
-                    {post.excerpt}
-                  </p>
+                  <p 
+                    className="mt-5 line-clamp-3 text-sm leading-6 text-foreground/70"
+                    dangerouslySetInnerHTML={{ __html: post.excerpt }}
+                  />
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-2">
@@ -162,10 +189,10 @@ export default function News() {
                   ))}
                 </div>
 
-                {post.externalUrl && (
+                {post.external_url && (
                   <div className="mt-4">
                     <a
-                      href={post.externalUrl}
+                      href={post.external_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1"
@@ -182,6 +209,12 @@ export default function News() {
           ))}
         </div>
       </div>
+      
+      <NewsDrawer 
+        isOpen={drawerOpen} 
+        onClose={closeNewsDrawer} 
+        articleSlug={selectedArticleSlug} 
+      />
     </section>
   );
 }

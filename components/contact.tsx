@@ -17,7 +17,7 @@ interface FormStatus {
 }
 
 export default function Contact() {
-  const { data: aboutData, loading } = useAboutData();
+  const { data: aboutData  } = useAboutData();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -155,7 +155,7 @@ export default function Contact() {
             </div>
 
             {/* Social links */}
-            <div className="fade-in-up delay-300">
+            {/* <div className="fade-in-up delay-300">
               <h4 className="text-lg font-semibold text-foreground mb-4">
                 Follow Me
               </h4>
@@ -173,10 +173,10 @@ export default function Contact() {
                   </a>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Working hours */}
-            <div className="fade-in-up delay-400">
+            {/* <div className="fade-in-up delay-400">
               <h4 className="text-lg font-semibold text-foreground mb-4">
                 Working Hours
               </h4>
@@ -201,7 +201,7 @@ export default function Contact() {
                   </>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Contact form */}

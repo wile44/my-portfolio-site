@@ -7,10 +7,10 @@ import {
   Cloud, 
   TestTube2, 
   Monitor,
-  Settings,
-  Video,
-  Palette,
-  PenTool
+  // Settings,
+  // Video,
+  // Palette,
+  // PenTool
 } from 'lucide-react';
 
 interface Skill {
@@ -25,31 +25,31 @@ interface SkillCategory {
   color: string;
 }
 
-const categoryIcons = {
-  'Frontend': Monitor,
-  'Backend': Code2,
-  'Databases': Database,
-  'Cloud': Cloud,
-  'DevOps': Settings,
-  'Testing': TestTube2,
-  'Tools': Settings,
-  'Creative & Media': Palette,
-  'Design & UX': PenTool,
-  'Content Creation': Video,
-};
+// const categoryIcons = {
+//   'Frontend': Monitor,
+//   'Backend': Code2,
+//   'Databases': Database,
+//   'Cloud': Cloud,
+//   'DevOps': Settings,
+//   'Testing': TestTube2,
+//   'Tools': Settings,
+//   'Creative & Media': Palette,
+//   'Design & UX': PenTool,
+//   'Content Creation': Video,
+// };
 
-const categoryColors = {
-  'Frontend': 'blue',
-  'Backend': 'green',
-  'Databases': 'purple',
-  'Cloud': 'orange',
-  'DevOps': 'orange',
-  'Testing': 'red',
-  'Tools': 'gray',
-  'Creative & Media': 'pink',
-  'Design & UX': 'indigo',
-  'Content Creation': 'red',
-};
+// const categoryColors = {
+//   'Frontend': 'blue',
+//   'Backend': 'green',
+//   'Databases': 'purple',
+//   'Cloud': 'orange',
+//   'DevOps': 'orange',
+//   'Testing': 'red',
+//   'Tools': 'gray',
+//   'Creative & Media': 'pink',
+//   'Design & UX': 'indigo',
+//   'Content Creation': 'red',
+// };
 
 // Hardcoded skills data
 const skillCategories: SkillCategory[] = [

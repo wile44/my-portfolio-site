@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Calendar, Clock, Tag, User, ArrowLeft, Share2 } from 'lucide-react';
+import { Calendar, Clock, Tag, ArrowLeft, Share2 } from 'lucide-react';
 import Link from 'next/link';
 
 interface Article {
@@ -41,7 +41,7 @@ const articles: Article[] = [
       </ul>
       
       <h3>The Impact on Developer Productivity</h3>
-      <p>Studies show that developers using AI-powered tools can be up to 55% more productive. This isn't just about writing code faster—it's about writing better code with fewer bugs and security issues.</p>
+      <p>Studies show that developers using AI-powered tools can be up to 55% more productive. This isn&apos;t just about writing code faster—it&apos;s about writing better code with fewer bugs and security issues.</p>
       
       <h3>Future Developments</h3>
       <p>Looking ahead, we can expect AI to handle even more complex tasks:</p>
@@ -53,7 +53,7 @@ const articles: Article[] = [
       </ul>
       
       <h3>Conclusion</h3>
-      <p>The integration of AI into software development isn't about replacing developers—it's about augmenting human capabilities. The future belongs to developers who can effectively collaborate with AI tools to build better software faster.</p>
+      <p>The integration of AI into software development isn&apos;t about replacing developers—it&apos;s about augmenting human capabilities. The future belongs to developers who can effectively collaborate with AI tools to build better software faster.</p>
     `,
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80',
     publishedAt: '2024-08-10',

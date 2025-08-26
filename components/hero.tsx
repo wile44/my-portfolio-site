@@ -4,7 +4,7 @@ import { ArrowDown, Download, Github, Linkedin, Mail } from 'lucide-react';
 import { useAboutData } from '@/lib/hooks/useDirectus';
 
 export default function Hero() {
-  const { data: aboutData, loading, error } = useAboutData();
+  const { data: aboutData, loading } = useAboutData();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.querySelector(sectionId);
