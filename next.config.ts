@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/assets/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cms.goodluck.it.com',
+        port: '',
+        pathname: '/assets/**',
+      },
     ],
   },
 };
