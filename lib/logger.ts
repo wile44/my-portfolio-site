@@ -72,8 +72,8 @@ class Logger {
     fetchSuccess: (collection: string, count: number) => {
       this.info(`Successfully fetched from Directus: ${collection}`, { count });
     },
-    fetchError: (collection: string, error: unknown) => {
-      this.error(`Failed to fetch from Directus: ${collection}`, error);
+    fetchError: (collection: string, error: unknown, context?: LogContext) => {
+      this.error(`Failed to fetch from Directus: ${collection}`, error, context);
     },
   };
 }

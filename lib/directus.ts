@@ -168,10 +168,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     logger.directus.fetchStart('articles', { slug });
     const articles = await directus.request(readItems('articles', {
       filter: { 
-        _or: [
-          { slug: { _eq: slug } },
-          { id: { _eq: slug } }
-        ],
+        slug: { _eq: slug },
         status: { _eq: 'published' } 
       },
       limit: 1,
@@ -179,7 +176,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     logger.directus.fetchSuccess('articles', articles.length);
     return articles[0] || null;
   } catch (error) {
-    logger.directus.fetchError('articles', error);
+    logger.directus.fetchError('articles', error, { slug });
     return null;
   }
 }
