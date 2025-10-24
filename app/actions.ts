@@ -2,12 +2,10 @@
 
 import { submitContactMessage } from '@/lib/directus-server';
 import { logger } from '@/lib/logger';
-import { contactFormSchema, validateData, type ContactFormData } from '@/lib/validations';
+import { contactFormSchema, validateData } from '@/lib/validations';
+import type { ContactFormData } from '@/lib/validations';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
-
-// Re-export types for components
-export type { ContactFormData } from '@/lib/validations';
 
 export interface ContactFormResponse {
   success: boolean;
@@ -77,9 +75,16 @@ export async function submitContactFormAction(formData: ContactFormData): Promis
     }
   } catch (error) {
     logger.error('Error submitting contact form', error);
+    
+    // More helpful error message in development
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
     return {
       success: false,
-      message: 'Something went wrong. Please try again later or contact me directly via email.',
+      message: isDevelopment 
+        ? `Development Error: ${errorMessage}. Make sure Directus is running.`
+        : 'Something went wrong. Please try again later or contact me directly via email.',
     };
   }
 }
