@@ -2,13 +2,12 @@
 
 import { submitContactMessage } from '@/lib/directus-server';
 import { logger } from '@/lib/logger';
+import { contactFormSchema, validateData, type ContactFormData } from '@/lib/validations';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { headers } from 'next/headers';
 
-export interface ContactFormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
+// Re-export types for components
+export type { ContactFormData } from '@/lib/validations';
 
 export interface ContactFormResponse {
   success: boolean;
@@ -18,44 +17,35 @@ export interface ContactFormResponse {
   };
 }
 
-// Basic server-side validation
-function validateContactForm(data: ContactFormData): { isValid: boolean; errors: Record<string, string> } {
-  const errors: Record<string, string> = {};
-
-  if (!data.name || data.name.trim().length < 2) {
-    errors.name = 'Name must be at least 2 characters';
-  }
-
-  if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-    errors.email = 'Please enter a valid email address';
-  }
-
-  if (!data.subject || data.subject.trim().length < 3) {
-    errors.subject = 'Subject must be at least 3 characters';
-  }
-
-  if (!data.message || data.message.trim().length < 10) {
-    errors.message = 'Message must be at least 10 characters';
-  }
-
-  // Check for reasonable lengths to prevent abuse
-  if (data.name.length > 100) errors.name = 'Name is too long';
-  if (data.email.length > 255) errors.email = 'Email is too long';
-  if (data.subject.length > 200) errors.subject = 'Subject is too long';
-  if (data.message.length > 5000) errors.message = 'Message is too long';
-
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors,
-  };
-}
-
 export async function submitContactFormAction(formData: ContactFormData): Promise<ContactFormResponse> {
   try {
-    // Validate input
-    const validation = validateContactForm(formData);
+    // Get identifier for rate limiting (use email as identifier)
+    const headersList = await headers();
+    const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown';
+    const identifier = `${ip}-${formData.email}`;
     
-    if (!validation.isValid) {
+    // Check rate limit: 3 submissions per 5 minutes per email
+    const rateLimit = checkRateLimit(identifier, {
+      maxRequests: 3,
+      windowMs: 5 * 60 * 1000, // 5 minutes
+    });
+
+    if (!rateLimit.allowed) {
+      const resetMinutes = Math.ceil((rateLimit.resetTime - Date.now()) / 60000);
+      logger.warn('Rate limit exceeded for contact form', { 
+        identifier,
+        email: formData.email,
+      });
+      return {
+        success: false,
+        message: `Too many requests. Please try again in ${resetMinutes} minute(s).`,
+      };
+    }
+
+    // Validate input with Zod
+    const validation = validateData(contactFormSchema, formData);
+    
+    if (!validation.success) {
       return {
         success: false,
         message: 'Please check the form for errors',
@@ -63,13 +53,15 @@ export async function submitContactFormAction(formData: ContactFormData): Promis
       };
     }
 
-    // Sanitize input (basic - you might want to use a library like DOMPurify for more robust sanitization)
-    const sanitizedData = {
-      name: formData.name.trim(),
-      email: formData.email.trim().toLowerCase(),
-      subject: formData.subject.trim(),
-      message: formData.message.trim(),
-    };
+    // Data is already sanitized by Zod (trim, toLowerCase, etc.)
+    if (!validation.data) {
+      return {
+        success: false,
+        message: 'Invalid form data',
+      };
+    }
+    
+    const sanitizedData = validation.data;
 
     // Submit to Directus
     const success = await submitContactMessage(sanitizedData);

@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { Send, Mail, Phone, MapPin, CheckCircle, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import { submitContactFormAction } from '@/app/actions';
 import type { ContactFormData } from '@/app/actions';
 import type { About } from '@/lib/directus';
+import { contactFormSchema } from '@/lib/validations';
 
 interface FormStatus {
   type: 'idle' | 'loading' | 'success' | 'error';
@@ -39,7 +41,25 @@ export default function Contact({ aboutData }: ContactProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Client-side validation with Zod
+    const validation = contactFormSchema.safeParse(formData);
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
+      validation.error.issues.forEach((issue) => {
+        const path = issue.path.join('.');
+        errors[path] = issue.message;
+      });
+      setFormStatus({
+        type: 'error',
+        message: 'Please check the form for errors',
+        errors,
+      });
+      toast.error('Please check the form for errors');
+      return;
+    }
+
     setFormStatus({ type: 'loading', message: 'Sending message...', errors: undefined });
+    toast.loading('Sending your message...');
 
     try {
       const response = await submitContactFormAction(formData);
@@ -49,6 +69,8 @@ export default function Contact({ aboutData }: ContactProps) {
           type: 'success',
           message: response.message,
         });
+        toast.dismiss();
+        toast.success(response.message);
         
         // Clear form on success
         setFormData({
@@ -63,12 +85,16 @@ export default function Contact({ aboutData }: ContactProps) {
           message: response.message,
           errors: response.errors,
         });
+        toast.dismiss();
+        toast.error(response.message);
       }
     } catch {
       setFormStatus({
         type: 'error',
         message: 'Something went wrong. Please try again.',
       });
+      toast.dismiss();
+      toast.error('Something went wrong. Please try again.');
     }
   };
 
@@ -92,25 +118,6 @@ export default function Contact({ aboutData }: ContactProps) {
       href: `https://maps.google.com/?q=${encodeURIComponent(aboutData.location)}`,
     }] : []),
   ];
-
-  // Social links prepared for future use
-  // const socialLinks = [
-  //   ...(aboutData?.github_url ? [{
-  //     icon: Github,
-  //     label: 'GitHub',
-  //     href: aboutData.github_url,
-  //   }] : []),
-  //   ...(aboutData?.linkedin_url ? [{
-  //     icon: Linkedin,
-  //     label: 'LinkedIn',
-  //     href: aboutData.linkedin_url,
-  //   }] : []),
-  //   ...(aboutData?.twitter_url ? [{
-  //     icon: Twitter,
-  //     label: 'Twitter',
-  //     href: aboutData.twitter_url,
-  //   }] : []),
-  // ];
 
   return (
     <section id="contact" className="py-20 sm:py-32 bg-accent/30">
@@ -155,55 +162,6 @@ export default function Contact({ aboutData }: ContactProps) {
                 </a>
               ))}
             </div>
-
-            {/* Social links */}
-            {/* <div className="fade-in-up delay-300">
-              <h4 className="text-lg font-semibold text-foreground mb-4">
-                Follow Me
-              </h4>
-              <div className="flex space-x-4">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-lg bg-background hover:bg-accent/50 transition-all duration-200 transform hover:scale-110"
-                    aria-label={social.label}
-                  >
-                    <social.icon className="h-5 w-5 text-foreground/70" />
-                  </a>
-                ))}
-              </div>
-            </div> */}
-
-            {/* Working hours */}
-            {/* <div className="fade-in-up delay-400">
-              <h4 className="text-lg font-semibold text-foreground mb-4">
-                Working Hours
-              </h4>
-              <div className="bg-background rounded-lg p-4">
-                {aboutData?.working_hours ? (
-                  <p className="text-foreground/70 whitespace-pre-line">
-                    {aboutData.working_hours}
-                  </p>
-                ) : loading ? (
-                  <div className="animate-pulse">
-                    <div className="h-4 bg-foreground/20 rounded mb-2"></div>
-                    <div className="h-4 bg-foreground/20 rounded w-3/4"></div>
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-foreground/70">
-                      Monday - Friday: 9:00 AM - 6:00 PM (PST)
-                    </p>
-                    <p className="text-foreground/70">
-                      Available for remote work and flexible hours
-                    </p>
-                  </>
-                )}
-              </div>
-            </div> */}
           </div>
 
           {/* Contact form */}
