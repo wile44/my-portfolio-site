@@ -6,6 +6,7 @@ import { contactFormSchema, validateData } from '@/lib/validations';
 import type { ContactFormData } from '@/lib/validations';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { RATE_LIMIT_CONFIG, SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
 
 export interface ContactFormResponse {
   success: boolean;
@@ -22,11 +23,8 @@ export async function submitContactFormAction(formData: ContactFormData): Promis
     const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown';
     const identifier = `${ip}-${formData.email}`;
     
-    // Check rate limit: 3 submissions per 5 minutes per email
-    const rateLimit = checkRateLimit(identifier, {
-      maxRequests: 3,
-      windowMs: 5 * 60 * 1000, // 5 minutes
-    });
+    // Check rate limit
+    const rateLimit = checkRateLimit(identifier, RATE_LIMIT_CONFIG.CONTACT_FORM);
 
     if (!rateLimit.allowed) {
       const resetMinutes = Math.ceil((rateLimit.resetTime - Date.now()) / 60000);
@@ -68,7 +66,7 @@ export async function submitContactFormAction(formData: ContactFormData): Promis
       logger.info('Contact form submitted successfully', { email: sanitizedData.email });
       return {
         success: true,
-        message: 'Thank you for your message! I\'ll get back to you soon.',
+        message: SUCCESS_MESSAGES.CONTACT_FORM,
       };
     } else {
       throw new Error('Failed to submit message');
@@ -84,7 +82,7 @@ export async function submitContactFormAction(formData: ContactFormData): Promis
       success: false,
       message: isDevelopment 
         ? `Development Error: ${errorMessage}. Make sure Directus is running.`
-        : 'Something went wrong. Please try again later or contact me directly via email.',
+        : ERROR_MESSAGES.GENERIC,
     };
   }
 }

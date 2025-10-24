@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { getOptimizedImageUrl } from '@/lib/directus-utils';
 import type { Project } from '@/lib/directus';
 import ProjectDrawer from './ProjectDrawer';
+import { PROJECT_CATEGORIES, TECH_CATEGORIES, IMAGE_SIZES, SOCIAL_LINKS } from '@/lib/constants';
 
 interface ProjectsProps {
   projects: Project[];
@@ -26,23 +27,13 @@ export default function Projects({ projects: initialProjects }: ProjectsProps) {
     setSelectedProjectId(null);
   };
 
-  const categories = ['All', 'Full-Stack', 'Frontend', 'AI/ML', 'Mobile', 'Backend'];
   const filteredProjects = selectedCategory === 'All' 
     ? initialProjects 
     : initialProjects.filter(project => {
-        // Filter by technologies or other criteria since category field is not available
-        const techCategories = {
-          'Full-Stack': ['react', 'next.js', 'node.js', 'express', 'mongodb', 'postgresql'],
-          'Frontend': ['react', 'next.js', 'vue', 'angular', 'tailwind', 'css', 'html'],
-          'AI/ML': ['python', 'tensorflow', 'pytorch', 'machine learning', 'ai', 'ml'],
-          'Mobile': ['react native', 'flutter', 'swift', 'kotlin', 'ios', 'android'],
-          'Backend': ['node.js', 'python', 'java', 'postgresql', 'mongodb', 'redis']
-        };
-        
         if (selectedCategory === 'All') return true;
         
         const techs = project.technologies.map(t => t.toLowerCase());
-        const categoryTechs = techCategories[selectedCategory as keyof typeof techCategories] || [];
+        const categoryTechs = TECH_CATEGORIES[selectedCategory as keyof typeof TECH_CATEGORIES] || [];
         return techs.some(tech => categoryTechs.some(catTech => tech.includes(catTech)));
       });
 
@@ -62,7 +53,7 @@ export default function Projects({ projects: initialProjects }: ProjectsProps) {
         {/* Category filter */}
         <div className="flex justify-center mb-12">
           <div className="inline-flex rounded-lg bg-accent/50 p-1">
-            {categories.map((category) => (
+            {PROJECT_CATEGORIES.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
@@ -88,10 +79,10 @@ export default function Projects({ projects: initialProjects }: ProjectsProps) {
               {/* Project image */}
               <div className="relative h-48 overflow-hidden">
                 <Image
-                  src={project.image ? getOptimizedImageUrl(project.image, 800, 400) : '/placeholder.jpg'}
+                  src={project.image ? getOptimizedImageUrl(project.image, IMAGE_SIZES.PROJECT_CARD.width, IMAGE_SIZES.PROJECT_CARD.height, IMAGE_SIZES.QUALITY) : '/placeholder.jpg'}
                   alt={project.title}
-                  width={800}
-                  height={400}
+                  width={IMAGE_SIZES.PROJECT_CARD.width}
+                  height={IMAGE_SIZES.PROJECT_CARD.height}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -174,7 +165,7 @@ export default function Projects({ projects: initialProjects }: ProjectsProps) {
         {/* View all projects CTA */}
         <div className="text-center">
           <a
-            href="https://github.com/wile44"
+            href={SOCIAL_LINKS.github}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white gradient-bg hover:opacity-90 transition-all duration-200 transform hover:scale-105"

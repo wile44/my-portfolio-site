@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Send, Mail, Phone, MapPin, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { submitContactFormAction } from '@/app/actions';
-import type { ContactFormData } from '@/app/actions';
+import type { ContactFormData } from '@/lib/validations';
 import type { About } from '@/lib/directus';
 import { contactFormSchema } from '@/lib/validations';
 

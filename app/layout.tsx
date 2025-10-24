@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
+import { SITE_CONFIG, SEO_KEYWORDS } from "@/lib/constants";
+import StructuredData from "@/components/StructuredData";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,24 +17,31 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Goodluck Wile - Software Engineer",
-  description: "Modern portfolio of Goodluck Wile, a passionate software engineer specializing in full-stack development, cloud technologies, and innovative solutions.",
-  keywords: "Goodluck Wile, software engineer, full-stack developer, portfolio, web development, cloud, react, node.js",
-  authors: [{ name: "Goodluck Wile" }],
-  creator: "Goodluck Wile",
+  title: {
+    default: SITE_CONFIG.title,
+    template: `%s | ${SITE_CONFIG.name}`,
+  },
+  description: SITE_CONFIG.description,
+  keywords: [...SEO_KEYWORDS],
+  authors: [{ name: SITE_CONFIG.author.name, url: SITE_CONFIG.url }],
+  creator: SITE_CONFIG.author.name,
+  metadataBase: new URL(SITE_CONFIG.url),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://goodluckwile.dev",
-    title: "Goodluck Wile - Software Engineer",
-    description: "Modern portfolio showcasing my journey as a software engineer",
-    siteName: "Goodluck Wile Portfolio",
+    url: SITE_CONFIG.url,
+    title: SITE_CONFIG.title,
+    description: SITE_CONFIG.description,
+    siteName: `${SITE_CONFIG.name} Portfolio`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Goodluck Wile - Software Engineer",
-    description: "Modern portfolio showcasing my journey as a software engineer",
-    creator: "@goodluckwile",
+    title: SITE_CONFIG.title,
+    description: SITE_CONFIG.description,
+    creator: SITE_CONFIG.author.twitter,
   },
   robots: {
     index: true,
@@ -45,6 +54,9 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: '', // Add your Google Search Console verification code
+  },
 };
 
 export default function RootLayout({
@@ -54,6 +66,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <StructuredData />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
       >
