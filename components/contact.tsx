@@ -1,24 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, Mail, Phone, MapPin, Github, Linkedin, Twitter, CheckCircle, AlertCircle } from 'lucide-react';
-import { useAboutData } from '@/lib/hooks/useDirectus';
-
-interface FormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
+import { Send, Mail, Phone, MapPin, CheckCircle, AlertCircle } from 'lucide-react';
+import { submitContactFormAction } from '@/app/actions';
+import type { ContactFormData } from '@/app/actions';
+import type { About } from '@/lib/directus';
 
 interface FormStatus {
   type: 'idle' | 'loading' | 'success' | 'error';
   message: string;
+  errors?: Record<string, string>;
 }
 
-export default function Contact() {
-  const { data: aboutData  } = useAboutData();
-  const [formData, setFormData] = useState<FormData>({
+interface ContactProps {
+  aboutData: About | null;
+}
+
+export default function Contact({ aboutData }: ContactProps) {
+  const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
     subject: '',
@@ -27,6 +26,7 @@ export default function Contact() {
   const [formStatus, setFormStatus] = useState<FormStatus>({
     type: 'idle',
     message: '',
+    errors: undefined,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -39,20 +39,18 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    setFormStatus({ type: 'loading', message: 'Sending message...' });
+    setFormStatus({ type: 'loading', message: 'Sending message...', errors: undefined });
 
     try {
-      // Import the function dynamically to avoid SSR issues
-      const { submitContactMessage } = await import('@/lib/directus');
+      const response = await submitContactFormAction(formData);
       
-      const success = await submitContactMessage(formData);
-      
-      if (success) {
+      if (response.success) {
         setFormStatus({
           type: 'success',
-          message: 'Thank you for your message! I\'ll get back to you soon.',
+          message: response.message,
         });
         
+        // Clear form on success
         setFormData({
           name: '',
           email: '',
@@ -60,10 +58,13 @@ export default function Contact() {
           message: '',
         });
       } else {
-        throw new Error('Failed to submit message');
+        setFormStatus({
+          type: 'error',
+          message: response.message,
+          errors: response.errors,
+        });
       }
-    } catch (error) {
-      console.error('Contact form error:', error);
+    } catch {
       setFormStatus({
         type: 'error',
         message: 'Something went wrong. Please try again.',
@@ -92,23 +93,24 @@ export default function Contact() {
     }] : []),
   ];
 
-  const socialLinks = [
-    ...(aboutData?.github_url ? [{
-      icon: Github,
-      label: 'GitHub',
-      href: aboutData.github_url,
-    }] : []),
-    ...(aboutData?.linkedin_url ? [{
-      icon: Linkedin,
-      label: 'LinkedIn',
-      href: aboutData.linkedin_url,
-    }] : []),
-    ...(aboutData?.twitter_url ? [{
-      icon: Twitter,
-      label: 'Twitter',
-      href: aboutData.twitter_url,
-    }] : []),
-  ];
+  // Social links prepared for future use
+  // const socialLinks = [
+  //   ...(aboutData?.github_url ? [{
+  //     icon: Github,
+  //     label: 'GitHub',
+  //     href: aboutData.github_url,
+  //   }] : []),
+  //   ...(aboutData?.linkedin_url ? [{
+  //     icon: Linkedin,
+  //     label: 'LinkedIn',
+  //     href: aboutData.linkedin_url,
+  //   }] : []),
+  //   ...(aboutData?.twitter_url ? [{
+  //     icon: Twitter,
+  //     label: 'Twitter',
+  //     href: aboutData.twitter_url,
+  //   }] : []),
+  // ];
 
   return (
     <section id="contact" className="py-20 sm:py-32 bg-accent/30">

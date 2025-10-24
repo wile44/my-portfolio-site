@@ -1,4 +1,5 @@
 import { createDirectus, rest, readItems, createItem, staticToken } from '@directus/sdk';
+import { logger } from './logger';
 
 // Define the schema for your collections
 export interface About {
@@ -104,7 +105,7 @@ export async function getAboutInfo(): Promise<About | null> {
     })) as About[];
     return about[0] || null;
   } catch (error) {
-    console.error('Error fetching about info:', error);
+    logger.directus.fetchError('about', error);
     return null;
   }
 }
@@ -118,7 +119,7 @@ export async function getProjects(featured = false): Promise<Project[]> {
     })) as Project[];
     return projects;
   } catch (error) {
-    console.error('Error fetching projects:', error);
+    logger.directus.fetchError('projects', error);
     return [];
   }
 }
@@ -130,7 +131,7 @@ export async function getSkills(): Promise<Skill[]> {
     })) as Skill[];
     return skills;
   } catch (error) {
-    console.error('Error fetching skills:', error);
+    logger.directus.fetchError('skills', error);
     return [];
   }
 }
@@ -142,7 +143,7 @@ export async function getExperience(): Promise<Experience[]> {
     })) as Experience[];
     return experience;
   } catch (error) {
-    console.error('Error fetching experience:', error);
+    logger.directus.fetchError('experience', error);
     return [];
   }
 }
@@ -154,17 +155,17 @@ export async function getArticles(type?: 'video' | 'article'): Promise<Article[]
       filter,
       sort: ['-published_at'],
     })) as Article[];
-    console.log('Directus: getArticles returned:', articles.length, 'articles');
+    logger.directus.fetchSuccess('articles', articles.length);
     return articles;
   } catch (error) {
-    console.error('Error fetching articles:', error);
+    logger.directus.fetchError('articles', error);
     return [];
   }
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   try {
-    console.log('Directus: Fetching article with slug/id:', slug);
+    logger.directus.fetchStart('articles', { slug });
     const articles = await directus.request(readItems('articles', {
       filter: { 
         _or: [
@@ -175,10 +176,10 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       },
       limit: 1,
     })) as Article[];
-    console.log('Directus: Found articles:', articles);
+    logger.directus.fetchSuccess('articles', articles.length);
     return articles[0] || null;
   } catch (error) {
-    console.error('Error fetching article:', error);
+    logger.directus.fetchError('articles', error);
     return null;
   }
 }
@@ -191,7 +192,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
     })) as Project[];
     return projects[0] || null;
   } catch (error) {
-    console.error('Error fetching project:', error);
+    logger.directus.fetchError('projects', error);
     return null;
   }
 }
@@ -204,7 +205,7 @@ export async function submitContactMessage(data: Omit<ContactMessage, 'id' | 'st
     }));
     return true;
   } catch (error) {
-    console.error('Error submitting contact message:', error);
+    logger.error('Failed to submit contact message', error);
     return false;
   }
 }
@@ -224,8 +225,6 @@ export function getOptimizedImageUrl(assetId: string, width?: number, height?: n
   if (height) params.append('height', height.toString());
   params.append('quality', quality.toString());
   params.append('format', 'webp');
-
-  console.log(`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${assetId}?${params.toString()}`);
   
   return `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${assetId}?${params.toString()}`;
 }

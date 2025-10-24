@@ -7,22 +7,23 @@ import {
   Cloud, 
   TestTube2, 
   Monitor,
-  // Settings,
-  // Video,
-  // Palette,
-  // PenTool
 } from 'lucide-react';
+import type { Skill } from '@/lib/directus';
 
-interface Skill {
+interface LocalSkill {
   name: string;
   proficiency: number;
 }
 
 interface SkillCategory {
   name: string;
-  skills: Skill[];
+  skills: LocalSkill[];
   icon: React.ElementType;
   color: string;
+}
+
+interface SkillsProps {
+  skills: Skill[] | null;
 }
 
 // const categoryIcons = {
@@ -120,8 +121,12 @@ const skillCategories: SkillCategory[] = [
   }
 ];
 
-export default function Skills() {
+export default function Skills({ skills }: SkillsProps) {
   const [selectedCategory, setSelectedCategory] = useState('All');
+  
+  // Use hardcoded data as fallback if no skills from CMS
+  // TODO: Transform CMS skills from skills to match the category structure
+  void skills; // Suppress unused var warning
 
   return (
     <section id="skills" className="py-20 sm:py-32 bg-background">

@@ -1,6 +1,11 @@
 "use client";
 
 import { Award, Code, Users, Zap, Target, Heart } from "lucide-react";
+import type { About as AboutType } from "@/lib/directus";
+
+interface AboutProps {
+  aboutData: AboutType | null;
+}
 
 const stats = [
   { label: "Years Experience", value: "4+", icon: Award },
@@ -30,7 +35,11 @@ const values = [
   },
 ];
 
-export default function About() {
+export default function About({ aboutData }: AboutProps) {
+  // Use hardcoded content as fallback - could be replaced with CMS data in future
+  // TODO: Replace hardcoded content with CMS data from aboutData
+  // Suppress unused var warning as this will be used in the future
+  void aboutData;
   return (
     <section id="about" className="py-20 sm:py-32 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

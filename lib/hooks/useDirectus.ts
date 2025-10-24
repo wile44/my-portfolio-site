@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { About, Project, Skill, Experience } from '@/lib/directus';
+import { logger } from '@/lib/logger';
 
 // Generic hook for fetching data with error handling and loading states
 export function useDirectusData<T>(fetcher: () => Promise<T>, dependencies: unknown[] = []) {
@@ -26,7 +27,7 @@ export function useDirectusData<T>(fetcher: () => Promise<T>, dependencies: unkn
       } catch (err) {
         if (isMounted) {
           setError(err instanceof Error ? err.message : 'An error occurred');
-          console.error('Directus fetch error:', err);
+          logger.error('Directus fetch error in hook', err);
         }
       } finally {
         if (isMounted) {
@@ -45,14 +46,6 @@ export function useDirectusData<T>(fetcher: () => Promise<T>, dependencies: unkn
   }, [trigger, ...dependencies]);
 
   return { data, loading, error, refetch };
-}
-
-// Create a wrapper that avoids the spread operator warning
-function createDirectusHook<T>(fetcherCreator: () => () => Promise<T>, deps: unknown[] = []) {
-  return () => {
-    const fetcher = useCallback(fetcherCreator(), deps);
-    return useDirectusData(fetcher, deps);
-  };
 }
 
 // Specific hooks for different data types

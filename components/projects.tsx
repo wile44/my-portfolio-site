@@ -1,34 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ExternalLink, Github, Star, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
-import { getProjects } from '@/lib/directus';
-import { getOptimizedImageUrl } from '@/lib/directus';
+import { getOptimizedImageUrl } from '@/lib/directus-utils';
 import type { Project } from '@/lib/directus';
 import ProjectDrawer from './ProjectDrawer';
 
-export default function Projects() {
+interface ProjectsProps {
+  projects: Project[];
+}
+
+export default function Projects({ projects: initialProjects }: ProjectsProps) {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  const fetchProjects = async () => {
-    try {
-      const data = await getProjects();
-      setProjects(data);
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const openProjectDrawer = (projectId: string) => {
     setSelectedProjectId(projectId);
@@ -42,8 +28,8 @@ export default function Projects() {
 
   const categories = ['All', 'Full-Stack', 'Frontend', 'AI/ML', 'Mobile', 'Backend'];
   const filteredProjects = selectedCategory === 'All' 
-    ? projects 
-    : projects.filter(project => {
+    ? initialProjects 
+    : initialProjects.filter(project => {
         // Filter by technologies or other criteria since category field is not available
         const techCategories = {
           'Full-Stack': ['react', 'next.js', 'node.js', 'express', 'mongodb', 'postgresql'],
@@ -59,27 +45,6 @@ export default function Projects() {
         const categoryTechs = techCategories[selectedCategory as keyof typeof techCategories] || [];
         return techs.some(tech => categoryTechs.some(catTech => tech.includes(catTech)));
       });
-
-  if (loading) {
-    return (
-      <section id="projects" className="py-20 sm:py-32 bg-accent/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Featured <span className="gradient-text">Projects</span>
-            </h2>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              A showcase of my recent work, demonstrating my skills in full-stack development, 
-              modern technologies, and creative problem-solving.
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="projects" className="py-20 sm:py-32 bg-accent/30">
