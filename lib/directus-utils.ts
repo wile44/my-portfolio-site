@@ -32,3 +32,13 @@ export function getOptimizedImageUrl(assetId: string, width?: number, height?: n
   
   return `${baseUrl}/assets/${assetId}?${params.toString()}`;
 }
+
+// Utility function to format dates
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}

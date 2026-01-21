@@ -7,7 +7,7 @@ import { Menu, X, Sun, Moon, Github, Linkedin, Mail } from 'lucide-react';
 const navigation = [
   { name: 'About', href: '#about' },
   { name: 'Projects', href: '#projects' },
-  { name: 'News', href: '#news' },
+  { name: 'Blog', href: '/blog', external: true },
   { name: 'Skills', href: '#skills' },
   { name: 'Contact', href: '#contact' },
 ];
@@ -30,8 +30,12 @@ export default function Navigation() {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (href: string, external?: boolean) => {
     setMobileMenuOpen(false);
+    if (external) {
+      window.location.href = href;
+      return;
+    }
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -60,8 +64,10 @@ export default function Navigation() {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(link.href);
+                  if (!link.external) {
+                    e.preventDefault();
+                    handleNavClick(link.href);
+                  }
                 }}
                 className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200"
               >
@@ -140,8 +146,10 @@ export default function Navigation() {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(link.href);
+                  if (!link.external) {
+                    e.preventDefault();
+                    handleNavClick(link.href);
+                  }
                 }}
                 className="block px-3 py-2 text-base font-medium text-foreground/70 hover:text-foreground hover:bg-accent/50 rounded-lg transition-all duration-200"
               >

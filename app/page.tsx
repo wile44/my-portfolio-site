@@ -7,14 +7,16 @@ import Skills from '@/components/skills';
 import Contact from '@/components/contact';
 import Footer from '@/components/footer';
 import { SectionErrorBoundary } from '@/components/ErrorBoundary';
-import { getAboutInfo, getProjects, getSkills } from '@/lib/directus-server';
+import { getAboutInfo, getProjects, getSkills, getArticles } from '@/lib/directus-server';
+import FeaturedBlogs from '@/components/FeaturedBlogs';
 
 export default async function Home() {
   // Fetch data on the server
-  const [aboutData, projects, skills] = await Promise.all([
+  const [aboutData, projects, skills, articles] = await Promise.all([
     getAboutInfo(),
     getProjects(),
     getSkills(),
+    getArticles(),
   ]);
   return (
     <div className="min-h-screen bg-background">
@@ -34,6 +36,9 @@ export default async function Home() {
         </SectionErrorBoundary>
         <SectionErrorBoundary sectionName="Skills">
           <Skills skills={skills} />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary sectionName="Featured Blogs">
+          <FeaturedBlogs articles={articles} />
         </SectionErrorBoundary>
         <SectionErrorBoundary sectionName="Contact">
           <Contact aboutData={aboutData} />

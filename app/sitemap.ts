@@ -1,8 +1,10 @@
 import { MetadataRoute } from 'next';
 import { SITE_CONFIG } from '@/lib/constants';
+import { getArticles } from '@/lib/directus-server';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_CONFIG.url;
+  const articles = await getArticles();
   
   return [
     {
@@ -35,5 +37,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.6,
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    ...articles.map((article) => ({
+      url: `${baseUrl}/blog/${article.slug}`,
+      lastModified: article.published_at ? new Date(article.published_at) : new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
   ];
 }
